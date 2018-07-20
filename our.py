@@ -12,6 +12,13 @@ print('--------------------------------')
 # print(df.groupby('age').count())
 # print(df.groupby(['income', 'usage']).count())
 a = df.groupby(['age'])['age'].count()
+
+for a.value in a:
+    print(a.value)
+
+print('--------------------------------')
+
 print(a)
+
 print('--------------------------------')
 print(df.groupby(['age','usage'])['age'].count())
