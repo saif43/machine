@@ -1,9 +1,16 @@
 import numpy as np
 import pandas as pd
 import math
-fields = ['no','income','age','education','marital','usage']
+import csv
 
-df = pd.read_csv('our.csv', skipinitialspace=True, usecols=fields)
+with open('our.csv', 'r') as f:
+    d_reader = csv.DictReader(f)
+
+    #get fieldnames from DictReader object and store in list
+    header = d_reader.fieldnames
+
+
+df = pd.read_csv('our.csv', skipinitialspace=True, usecols=header)
 # print(df.keys())
 # # print(df.no)
 # print(df.no.size)
@@ -14,15 +21,18 @@ print('------------Start---------------\n')
 # print(df.groupby('age').count())
 # print(df.groupby(['income', 'usage']).count())
 
-total = df.no.size
+total = len(df.index)
 
-usage = df.groupby(['usage'])['usage'].count()
+className = header[len(header)-1]
+
+usage = df.groupby([className])[className].count()
+
 infoUsage = 0
 
 for usageNumber in usage:
     infoUsage += (-(usageNumber/total * math.log2(usageNumber/total)))
 
-print('Info Usage: ',infoUsage)
+print('Info',className,':',infoUsage)
 
 
 def run(x,y):
@@ -48,22 +58,25 @@ def run(x,y):
 
     return info_income_usage
 
+for i in range(len(header)-1):
+    print('Info',header[i],className,':',run(header[i],className))
 
-info_income_usage = run('income','usage')
-info_age_usage = run('age','usage')
-info_education_usage = run('education','usage')
-info_marital_usage = run('marital','usage')
+print('\n')
 
-print('Info Income Usage: ',info_income_usage)
-print('Info Age Usage: ',info_age_usage)
-print('Info Education Usage: ',info_education_usage)
-print('Info Marital Usage: ',info_marital_usage)
+for i in range(len(header)-1):
+    print('Gain',header[i],':',infoUsage-run(header[i],className))
 
-print('\n\n')
-print('Gain Income: ',infoUsage-info_income_usage)
-print('Gain Age: ',infoUsage-info_age_usage)
-print('Gain Education: ',infoUsage-info_education_usage)
-print('Gain Marital: ',infoUsage-info_marital_usage)
+# info_income_usage = run('income','usage')
+# info_age_usage = run('age','usage')
+# info_education_usage = run('education','usage')
+# info_marital_usage = run('marital','usage')
+
+
+# print('\n\n')
+# print('Gain Income: ',infoUsage-info_income_usage)
+# print('Gain Age: ',infoUsage-info_age_usage)
+# print('Gain Education: ',infoUsage-info_education_usage)
+# print('Gain Marital: ',infoUsage-info_marital_usage)
 
 
 
